@@ -79,3 +79,15 @@ Then hit **Reload** on the Web tab again.
 - `FLASK_DEBUG` must stay unset/`0` in production — the WSGI setup above
   doesn't call `app.run()` at all (PythonAnywhere's own server handles
   that), so debug mode never applies here regardless.
+- Free accounts also have a 512MB disk quota. `requirements.txt` is kept
+  to exactly what `app.py` needs at runtime (flask, pandas, numpy,
+  scikit-learn, joblib) — heavier packages like shap/matplotlib/seaborn/
+  imbalanced-learn (only ever used for offline exploration, not by the
+  deployed app) will blow the quota, especially via shap's numba/llvmlite
+  dependency. If `pip install` ever dies with "Disk quota exceeded"
+  mid-install, run `pip cache purge` (pip's download cache counts against
+  quota) and retry — and if a package's shared library ends up truncated
+  as a result (import errors mentioning "cannot read file data" or "you
+  should not try to import ... from its source directory"), reinstall it
+  with `pip install --no-cache-dir --force-reinstall <package>` (uninstall
+  it first with `pip uninstall` if the reinstall itself hits the quota).
