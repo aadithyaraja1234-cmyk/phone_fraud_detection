@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request
 import pandas as pd
 import numpy as np
@@ -5,8 +6,12 @@ import joblib
 
 app = Flask(__name__)
 
-model = joblib.load("fraud_model.pkl")
-scaler = joblib.load("scaler.pkl")
+# Load model/scaler by absolute path so this works regardless of the
+# process's working directory (important under a WSGI server like on
+# PythonAnywhere, where the cwd isn't guaranteed to be this folder).
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+model = joblib.load(os.path.join(BASE_DIR, "fraud_model.pkl"))
+scaler = joblib.load(os.path.join(BASE_DIR, "scaler.pkl"))
 
 # Feature columns the scaler/model were trained on, in the required order.
 FEATURE_COLUMNS = list(scaler.feature_names_in_)
@@ -46,4 +51,10 @@ def predict():
         return f"❌ Unexpected Error: {e}"
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Debug mode (auto-reload + interactive debugger) is only for local
+    # development. Never enable it on a public/always-on deployment: the
+    # Werkzeug debugger lets anyone who reaches an error page run
+    # arbitrary code. Opt in locally with: set FLASK_DEBUG=1 (Windows) or
+    # export FLASK_DEBUG=1 (macOS/Linux).
+    debug_mode = os.environ.get("FLASK_DEBUG", "0") == "1"
+    app.run(debug=debug_mode)
