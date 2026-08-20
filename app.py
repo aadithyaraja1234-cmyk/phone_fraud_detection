@@ -20,18 +20,33 @@ FEATURE_COLUMNS = list(scaler.feature_names_in_)
 def home():
     return render_template("index.html")
 
+def _error_page(message, heading="⚠️ Something went wrong", title="Error", status=400):
+    return render_template(
+        "error.html", message=message, heading=heading, title=title
+    ), status
+
+
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
         file = request.files.get("file")
         if file is None or file.filename == "":
-            return "❌ No file selected. Please choose a CSV file to upload."
+            return _error_page(
+                "No file selected. Please choose a CSV file to upload.",
+                heading="⚠️ No file selected",
+                title="No file selected",
+            )
 
         df = pd.read_csv(file)
 
         missing = [col for col in FEATURE_COLUMNS if col not in df.columns]
         if missing:
-            return f"❌ Uploaded CSV is missing required column(s): {', '.join(missing)}"
+            return _error_page(
+                f"Your CSV is missing required column(s): {', '.join(missing)}. "
+                f"Expected columns: {', '.join(FEATURE_COLUMNS)}.",
+                heading="⚠️ Missing columns",
+                title="Missing columns",
+            )
 
         # Select only the columns the model expects (in the right order) and
         # ignore any extra columns, e.g. a "number" identifier or label
@@ -48,7 +63,33 @@ def predict():
 
         return render_template("result.html", tables=df.to_dict(orient="records"))
     except Exception as e:
-        return f"❌ Unexpected Error: {e}"
+        return _error_page(
+            f"Unexpected error while processing your file: {e}",
+            heading="⚠️ Unexpected error",
+            title="Unexpected error",
+            status=500,
+        )
+
+
+@app.errorhandler(404)
+def not_found(e):
+    return _error_page(
+        "The page you're looking for doesn't exist.",
+        heading="⚠️ 404 — Page not found",
+        title="404 — Page not found",
+        status=404,
+    )
+
+
+@app.errorhandler(500)
+def server_error(e):
+    return _error_page(
+        "An unexpected server error occurred. Please try again.",
+        heading="⚠️ 500 — Server error",
+        title="500 — Server error",
+        status=500,
+    )
+
 
 if __name__ == "__main__":
     # Debug mode (auto-reload + interactive debugger) is only for local

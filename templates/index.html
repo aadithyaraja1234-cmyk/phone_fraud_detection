@@ -2,26 +2,56 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>📞 Fraud Detection</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>📞 Phone Fraud Detection System</title>
+<meta name="description" content="Upload a CSV of phone call statistics and get instant Fraud / Not Fraud predictions from a calibrated Random Forest model." />
+
+<link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}" />
+
+<meta property="og:title" content="Phone Fraud Detection System" />
+<meta property="og:description" content="Upload a CSV of phone call statistics and get instant Fraud / Not Fraud predictions from a calibrated Random Forest model." />
+<meta property="og:image" content="{{ url_for('static', filename='og-image.png', _external=True) }}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{ request.url_root }}" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Phone Fraud Detection System" />
+<meta name="twitter:description" content="Upload a CSV of phone call statistics and get instant Fraud / Not Fraud predictions." />
+<meta name="twitter:image" content="{{ url_for('static', filename='og-image.png', _external=True) }}" />
+
 <style>
-body {font-family:Arial, sans-serif;background:#f5f6fa;text-align:center;}
-.container{margin-top:100px;background:white;display:inline-block;padding:50px;border-radius:20px;box-shadow:0 0 15px #ccc;}
-h1{color:#2d3436;}
-input[type=file]{margin-top:20px;}
+body {font-family:Arial, sans-serif;background:#f5f6fa;text-align:center;margin:0;padding:0 16px;}
+.container{margin-top:100px;background:white;display:inline-block;padding:50px;border-radius:20px;box-shadow:0 0 15px #ccc;max-width:100%;box-sizing:border-box;}
+h1{color:#2d3436;font-size:26px;}
+input[type=file]{margin-top:20px;max-width:100%;}
 button{background:linear-gradient(45deg,#00b894,#0984e3);color:white;border:none;padding:10px 20px;
 border-radius:10px;cursor:pointer;font-size:16px;}
 button:hover{opacity:0.9;}
+button:disabled{opacity:0.7;cursor:wait;}
+.hint{color:#636e72;font-size:13px;margin-top:18px;}
+
+@media (max-width: 480px) {
+  .container{margin-top:40px;padding:30px 20px;}
+  h1{font-size:21px;}
+}
 </style>
 </head>
 <body>
 <div class="container">
   <h1>📞 Phone Fraud Detection System</h1>
-  <form action="/predict" method="post" enctype="multipart/form-data">
+  <form id="upload-form" action="/predict" method="post" enctype="multipart/form-data">
     <p>Select CSV file to analyze:</p>
-    <input type="file" name="file" required>
+    <input type="file" name="file" accept=".csv" required>
     <br><br>
-    <button type="submit">🔍 Analyze</button>
+    <button id="submit-btn" type="submit">🔍 Analyze</button>
   </form>
+  <p class="hint">Demo project — please don't upload real personal data.</p>
 </div>
+<script>
+document.getElementById('upload-form').addEventListener('submit', function () {
+  var btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Analyzing…';
+});
+</script>
 </body>
 </html>
