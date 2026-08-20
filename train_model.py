@@ -39,7 +39,7 @@ rf = RandomForestClassifier(
 # Train base model
 rf.fit(X_train, y_train)
 
-# ✅ Use sigmoid calibration (better for borderline predictions)
+# Use sigmoid calibration (better for borderline predictions)
 calibrated_rf = CalibratedClassifierCV(rf, method="sigmoid", cv=5)
 calibrated_rf.fit(X_train, y_train)
 
@@ -50,11 +50,11 @@ joblib.dump(calibrated_rf, "fraud_model.pkl")
 # Evaluate
 y_pred = calibrated_rf.predict(X_test)
 y_prob = calibrated_rf.predict_proba(X_test)[:, 1]
-print("✅ Model trained successfully.")
+print("Model trained successfully.")
 print(classification_report(y_test, y_pred, digits=3))
 
 # Display confidence smoothing
-print("\n🔍 Sample predictions:")
+print("\nSample predictions:")
 for i in range(10):
     confidence = y_prob[i] * 100
     # Smooth extreme probabilities (avoid 99% spikes)
