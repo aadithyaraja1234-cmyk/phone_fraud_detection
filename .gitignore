@@ -1,0 +1,8 @@
+venv/
+__pycache__/
+*.pyc
+uploads/
+
+# Unused experiment artifact, not loaded by app.py, and exceeds
+# GitHub's 100MB file size limit (102.53 MB).
+model/pipeline_rf_calibrated.pkl

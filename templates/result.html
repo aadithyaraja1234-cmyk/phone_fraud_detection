@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>📊 Fraud Analysis Results</title>
+<style>
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(180deg, #f0f2f5, #dfe6e9);
+  margin: 0;
+  text-align: center;
+  color: #2d3436;
+}
+
+.card {
+  background: white;
+  display: inline-block;
+  margin-top: 60px;
+  padding: 40px 60px;
+  border-radius: 20px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+h2 {
+  color: #0984e3;
+  margin-bottom: 25px;
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 15px;
+}
+
+.table th {
+  background: #74b9ff;
+  color: white;
+  padding: 10px;
+  text-transform: uppercase;
+  border: none;
+}
+
+.table td {
+  border-bottom: 1px solid #dfe6e9;
+  padding: 10px;
+}
+
+.status-fraud {
+  color: #d63031;
+  font-weight: bold;
+}
+
+.status-safe {
+  color: #00b894;
+  font-weight: bold;
+}
+
+.conf-bar {
+  height: 12px;
+  border-radius: 5px;
+  background: #dfe6e9;
+  margin: 5px auto;
+  width: 80%;
+  overflow: hidden;
+}
+
+.conf-fill {
+  height: 12px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #00b894, #0984e3);
+}
+
+.back {
+  margin-top: 20px;
+}
+
+a {
+  text-decoration: none;
+  color: #0984e3;
+  font-weight: bold;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: #00b894;
+}
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>📊 Fraud Analysis Results</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Phone Number</th>
+        <th>Prediction</th>
+        <th>Confidence</th>
+        <th>Total Calls</th>
+        <th>Avg Duration</th>
+        <th>Night Calls</th>
+        <th>Unique Contacts</th>
+        <th>IMEI Changes</th>
+        <th>Scam Flag</th>
+        <th>Short Call Ratio</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in tables %}
+      <tr>
+        <td><b>{{ row.number }}</b></td>
+        <td class="{{ 'status-fraud' if row.prediction == 'Fraud' else 'status-safe' }}">{{ row.prediction }}</td>
+        <td>
+          {{ row.confidence }}%
+          <div class="conf-bar">
+            <div class="conf-fill" style="width:{{ row.confidence }}%;"></div>
+          </div>
+        </td>
+        <td>{{ row.total_calls }}</td>
+        <td>{{ row.avg_duration }}</td>
+        <td>{{ row.night_calls }}</td>
+        <td>{{ row.unique_contacts }}</td>
+        <td>{{ row.imei_changes }}</td>
+        <td>{{ row.scam_keyword_flag }}</td>
+        <td>{{ row.short_call_ratio }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="back">
+    <a href="/">⬅ Back to Home</a>
+  </div>
+</div>
+</body>
+</html>

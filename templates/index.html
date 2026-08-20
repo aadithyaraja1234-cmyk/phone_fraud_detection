@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>📞 Fraud Detection</title>
+<style>
+body {font-family:Arial, sans-serif;background:#f5f6fa;text-align:center;}
+.container{margin-top:100px;background:white;display:inline-block;padding:50px;border-radius:20px;box-shadow:0 0 15px #ccc;}
+h1{color:#2d3436;}
+input[type=file]{margin-top:20px;}
+button{background:linear-gradient(45deg,#00b894,#0984e3);color:white;border:none;padding:10px 20px;
+border-radius:10px;cursor:pointer;font-size:16px;}
+button:hover{opacity:0.9;}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>📞 Phone Fraud Detection System</h1>
+  <form action="/predict" method="post" enctype="multipart/form-data">
+    <p>Select CSV file to analyze:</p>
+    <input type="file" name="file" required>
+    <br><br>
+    <button type="submit">🔍 Analyze</button>
+  </form>
+</div>
+</body>
+</html>
